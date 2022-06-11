@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mytutor/views/loginscreen.dart';
 import 'package:mytutor/views/mainscreen.dart';
@@ -31,7 +32,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('My Subjects'),
+          title: const Text('Subjects'),
         ),
         drawer: Drawer(
           child: ListView(
@@ -127,7 +128,50 @@ class _CoursesScreenState extends State<CoursesScreen> {
                   child: GridView.count(
                     crossAxisCount: 2,
                       children: List.generate(subjectList!.length, (index) {
-                        return Card();
+                        return Card(
+                          child: Column(
+                            children: [
+                              Flexible(flex: 6,
+                                child: CachedNetworkImage(
+                                  imageUrl: "http://10.143.159.53/mytutor2/assets/courses/" + 
+                                  subjectList![index]
+                                  .subjectId
+                                  .toString() +
+                                  '.jpg',
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) =>
+                                      const LinearProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                ),
+                              ),
+                                Flexible(
+                                  flex: 4,
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        subjectList![index]
+                                            .subjectName
+                                            .toString(),
+                                            style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),),
+                                      Text("RM " +
+                                          double.parse(subjectList![index]
+                                                  .subjectPrice
+                                                  .toString())
+                                              .toStringAsFixed(2)),
+                                      Text(subjectList![index]
+                                              .subjectDesc
+                                              .toString()),
+                                      Text(subjectList![index]
+                                          .subjectSessions
+                                          .toString() +
+                                          " time of sessions"),
+                                  ],
+                              ))
+                            ],
+                          ));
                         })
                         )
                         )

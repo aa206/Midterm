@@ -87,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (content) => LoginScreen(
+                        builder: (content) => TutorsScreen(user: widget.user,
                             )));
                 },
               ),
