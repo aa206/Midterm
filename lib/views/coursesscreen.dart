@@ -1,48 +1,37 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mytutor/views/loginscreen.dart';
-import 'package:mytutor/views/registerscreen.dart';
+import 'package:mytutor/views/mainscreen.dart';
 import 'package:mytutor/views/tutorsscreen.dart';
-import 'package:mytutor/views/coursesscreen.dart';
 import 'package:http/http.dart' as http;
-import '../models/courses.dart';
-import '/models/user.dart';
 
-class MainScreen extends StatefulWidget {
+import '../models/user.dart';
+import '../models/courses.dart';
+
+class CoursesScreen extends StatefulWidget {
   final User user;
-  const MainScreen({Key? key, required this.user}) : super(key: key);
+  const CoursesScreen({Key? key, required this.user}) : super(key: key);
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
-
+  State<CoursesScreen> createState() => _CoursesScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
-  late List<Widget> _pages;
-  
-  @override
-  void initState(){
-    _pages =<Widget>[
-      CoursesScreen(user: widget.user),
-      CoursesScreen(user: widget.user),
-      CoursesScreen(user: widget.user),
-    ];
-  }
- int _selectedIndex = 0;
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+class _CoursesScreenState extends State<CoursesScreen> {
+  List<Subject>? subjectList = <Subject>[];
+  String titlecenter = 'No Subjects Available';
 
+  @override
+  void initState() {
+    super.initState();
+    _loadSubjects();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('MY Tutor'),
+          title: const Text('My Subjects'),
         ),
         drawer: Drawer(
           child: ListView(
@@ -75,7 +64,8 @@ class _MainScreenState extends State<MainScreen> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (content) => CoursesScreen(user: widget.user,
+                        builder: (content) => CoursesScreen(
+                          user: widget.user,
                             )));
                 },
               ),
@@ -120,46 +110,31 @@ class _MainScreenState extends State<MainScreen> {
             ],
             ),
         ),
-        body: Center(
-            child: _pages.elementAt(_selectedIndex),
-          
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.folder),
-              label: 'Subjects',
-              backgroundColor: Colors.grey,
-              
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              label: 'Tutors',
-              backgroundColor: Colors.grey,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.save),
-              label: 'Subscribe',
-              backgroundColor: Colors.grey,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
-              label: 'Favourite',
-              backgroundColor: Colors.grey,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-              backgroundColor: Colors.grey,
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.pink,
-          onTap: _onItemTapped,
+        body: subjectList!.isEmpty
+        ? Center(
+          child: Text(titlecenter,
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)))
+        : Column(
+          children: [
+              const Padding(
+                padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                child: Text("Subjects Available",
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold)),
+              ),
+              Expanded(
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                      children: List.generate(subjectList!.length, (index) {
+                        return Card();
+                        })
+                        )
+                        )
+                        ],
         ),
     );
   }
-  
   Widget _createDrawerItem(
       {
       required IconData icon,
@@ -180,8 +155,20 @@ class _MainScreenState extends State<MainScreen> {
     ),
     onTap: onTap,
   );
-
-    }
-    
+  
+}      void _loadSubjects() {
+        http.post(Uri.parse("http://10.143.159.53/mytutor2/php/loadcourses.php"),
+            body: {}).then((response) {
+          var jsondata = jsonDecode(response.body);
+          if (response.statusCode == 200 && jsondata['status'] == 'success') {
+          var extractdata = jsondata['data'];
+          if (extractdata['subjects'] != null) {
+          subjectList = <Subject>[];
+          extractdata['subjects'].forEach((v) {
+            subjectList!.add(Subject.fromJson(v));
+          });
+          }
+          }
+        });
+  }
 }
-
