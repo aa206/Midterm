@@ -2,12 +2,12 @@
 
 include_once("dbconnect.php");
 
-$sqlloadtutors = "SELECT * FROM tbl_tutors INNER JOIN registration ON tbl_tutors.pridowner = registration.myt_id ORDER BY tbl_tutors.prdate DESC";
+$sqlloadtutors = "SELECT * FROM tbl_tutors";
 
 $result = $conn->query($sqlloadtutors);
 if ($result->num_rows > 0){
     $tutors["tutors"] = array();
-while ($row = $result-›fetch assoc()){
+while ($row = $result->fetch_assoc()){
     $tutorlist = array();
     $tutorlist['tutor_id'] = $row['tutor_id'];
     $tutorlist['tutor_email'] = $row['tutor_email'];

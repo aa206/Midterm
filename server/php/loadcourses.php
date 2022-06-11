@@ -2,12 +2,12 @@
 
 include_once("dbconnect.php");
 
-$sqlloadcourses = "SELECT * FROM tbl_subjects INNER JOIN registration ON tbl_subjects.pridowner = registration.myt_id ORDER BY tbl_subjects.prdate DESC";
+$sqlloadcourses = "SELECT * FROM tbl_subjects ";
 
 $result = $conn->query($sqlloadcourses);
-if ($result->num_rows > 0){
+if ($result->num_rows > 0) {
     $subjects["subjects"] = array();
-while ($row = $result->fetch assoc()){
+while ($row = $result->fetch_assoc()) {
     $subjectlist = array();
     $subjectlist['subject_id'] = $row['subject_id'];
     $subjectlist['subject_name'] = $row['subject_name'];
