@@ -136,7 +136,7 @@ class _TutorsScreenState extends State<TutorsScreen> {
                             children: [
                               Flexible(flex: 6,
                                 child: CachedNetworkImage(
-                                  imageUrl: "http://10.143.159.53/mytutor2/assets/courses/" + 
+                                  imageUrl: "http://10.143.159.53/mytutor2/assets/tutors/" + 
                                   tutorsList![index]
                                   .tutorId
                                   .toString() +

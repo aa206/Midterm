@@ -25,9 +25,9 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState(){
     _pages =<Widget>[
-      CoursesScreen(user: widget.user),
-      CoursesScreen(user: widget.user),
-      CoursesScreen(user: widget.user),
+      TutorsScreen(user: widget.user),
+      TutorsScreen(user: widget.user),
+      TutorsScreen(user: widget.user),
     ];
   }
  int _selectedIndex = 0;
